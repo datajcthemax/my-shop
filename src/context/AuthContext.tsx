@@ -6,8 +6,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged,
-  User as FirebaseUser
+  onAuthStateChanged
 } from 'firebase/auth';
 
 interface User {
@@ -47,7 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       return true;
-    } catch (e) {
+    } catch {
       return false;
     }
   };
@@ -60,7 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       return true;
-    } catch (e) {
+    } catch {
       return false;
     }
   };
