@@ -12,11 +12,24 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const ok = await register(email, password);
-    if (ok) {
-      router.push('/mypage');
-    } else {
-      setError('이미 존재하는 이메일이거나, 형식이 올바르지 않습니다.');
+    setError('');
+    try {
+      const ok = await register(email, password);
+      if (ok) {
+        router.push('/mypage');
+      } else {
+        setError('회원가입에 실패했습니다.');
+      }
+    } catch (err: any) {
+      if (err.code === 'auth/email-already-in-use') {
+        setError('이미 가입된 이메일입니다.');
+      } else if (err.code === 'auth/invalid-email') {
+        setError('이메일 형식이 올바르지 않습니다.');
+      } else if (err.code === 'auth/weak-password') {
+        setError('비밀번호는 6자 이상이어야 합니다.');
+      } else {
+        setError('회원가입에 실패했습니다.');
+      }
     }
   };
 
