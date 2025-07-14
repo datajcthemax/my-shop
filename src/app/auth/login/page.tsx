@@ -4,7 +4,7 @@ import { useAuth } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
 
 const LoginPage = () => {
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -43,6 +43,20 @@ const LoginPage = () => {
         {error && <div className="text-red-500 text-sm">{error}</div>}
         <button type="submit" className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">로그인</button>
       </form>
+      <button
+        type="button"
+        onClick={async () => {
+          const ok = await loginWithGoogle();
+          if (ok) {
+            router.push('/mypage');
+          } else {
+            setError('구글 로그인에 실패했습니다.');
+          }
+        }}
+        className="bg-red-500 text-white py-2 rounded hover:bg-red-600 transition mt-2 w-full"
+      >
+        Google로 로그인
+      </button>
     </div>
   );
 };
