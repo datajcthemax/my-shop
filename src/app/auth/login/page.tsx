@@ -6,17 +6,17 @@ import { useRouter } from 'next/navigation';
 const LoginPage = () => {
   const { login } = useAuth();
   const router = useRouter();
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const ok = login(username, password);
+    const ok = await login(email, password);
     if (ok) {
       router.push('/mypage');
     } else {
-      setError('아이디 또는 비밀번호가 올바르지 않습니다.');
+      setError('이메일 또는 비밀번호가 올바르지 않습니다.');
     }
   };
 
@@ -25,10 +25,10 @@ const LoginPage = () => {
       <h1 className="text-2xl font-bold mb-6">로그인</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
-          type="text"
-          placeholder="아이디"
-          value={username}
-          onChange={e => setUsername(e.target.value)}
+          type="email"
+          placeholder="이메일"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
           className="border rounded px-3 py-2"
           required
         />

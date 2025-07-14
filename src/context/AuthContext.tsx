@@ -1,16 +1,24 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { auth } from '../lib/firebase';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  User as FirebaseUser
+} from 'firebase/auth';
 
 interface User {
-  username: string;
+  email: string;
 }
 
 interface AuthContextType {
   user: User | null;
-  login: (username: string, password: string) => boolean;
-  logout: () => void;
-  register: (username: string, password: string) => boolean;
+  login: (email: string, password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
+  register: (email: string, password: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,29 +29,40 @@ export const useAuth = () => {
   return ctx;
 };
 
-// 간단한 mock 유저 DB
-const mockUsers: { username: string; password: string }[] = [];
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  const login = (username: string, password: string) => {
-    const found = mockUsers.find(u => u.username === username && u.password === password);
-    if (found) {
-      setUser({ username });
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        setUser({ email: firebaseUser.email ?? '' });
+      } else {
+        setUser(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
       return true;
+    } catch (e) {
+      return false;
     }
-    return false;
   };
 
-  const logout = () => setUser(null);
+  const logout = async () => {
+    await signOut(auth);
+  };
 
-  const register = (username: string, password: string) => {
-    const exists = mockUsers.some(u => u.username === username);
-    if (exists) return false;
-    mockUsers.push({ username, password });
-    setUser({ username });
-    return true;
+  const register = async (email: string, password: string) => {
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      return true;
+    } catch (e) {
+      return false;
+    }
   };
 
   return (
