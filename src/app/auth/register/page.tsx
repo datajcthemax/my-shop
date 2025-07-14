@@ -20,13 +20,18 @@ const RegisterPage = () => {
       } else {
         setError('회원가입에 실패했습니다.');
       }
-    } catch (err: any) {
-      if (err.code === 'auth/email-already-in-use') {
-        setError('이미 가입된 이메일입니다.');
-      } else if (err.code === 'auth/invalid-email') {
-        setError('이메일 형식이 올바르지 않습니다.');
-      } else if (err.code === 'auth/weak-password') {
-        setError('비밀번호는 6자 이상이어야 합니다.');
+    } catch (err: unknown) {
+      if (typeof err === 'object' && err && 'code' in err) {
+        const code = (err as { code: string }).code;
+        if (code === 'auth/email-already-in-use') {
+          setError('이미 가입된 이메일입니다.');
+        } else if (code === 'auth/invalid-email') {
+          setError('이메일 형식이 올바르지 않습니다.');
+        } else if (code === 'auth/weak-password') {
+          setError('비밀번호는 6자 이상이어야 합니다.');
+        } else {
+          setError('회원가입에 실패했습니다.');
+        }
       } else {
         setError('회원가입에 실패했습니다.');
       }
