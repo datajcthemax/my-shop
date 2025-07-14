@@ -5,7 +5,7 @@ export default function Home() {
     <main className="flex flex-col items-center justify-center min-h-[60vh] px-4">
       <div className="mb-6">
         <Image
-          src="/images/bonbon.png"
+          src="bonbon.jpeg"
           alt="봉봉이네 마스코트"
           width={160}
           height={160}
