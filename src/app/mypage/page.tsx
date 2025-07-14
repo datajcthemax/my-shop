@@ -18,7 +18,7 @@ const MyPage = () => {
   return (
     <div className="p-8 max-w-xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">마이페이지</h1>
-      <div className="mb-4">안녕하세요, <b>{user.username}</b>님!</div>
+      <div className="mb-4">안녕하세요, <b>{user.email}</b>님!</div>
       <button onClick={logout} className="bg-gray-200 px-4 py-2 rounded">로그아웃</button>
     </div>
   );
